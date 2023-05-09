@@ -1,2 +1,2 @@
 # PythonPasswordManager
-This is a Python Password manager that will hash and salt the master password and save it in the database for each user. The users are able to then add, save and retrieve different passwords that are encrypted and stored in a database.
+This is a Python Password manager that will hash and salt the master password and save it in the database for each user. The users are able to then add, save and retrieve different passwords that are encrypted and stored in a database!
