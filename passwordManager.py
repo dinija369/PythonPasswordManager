@@ -1,6 +1,5 @@
 import bcrypt
 import pyodbc
-import sys
 from cryptography.fernet import Fernet
 from flask import Flask, render_template, request, url_for, redirect
 
