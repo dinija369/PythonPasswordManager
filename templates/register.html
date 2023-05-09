@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Password Manager</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+	<script src="index.js"></script>
+    <h1>Register</h1>
+    <form method="post" action="/register">
+      <label for="userName">User name: </label>
+      <input id="userName" name="userName" type="text" required />
+      <label for="password">Password: </label>
+      <input id="password" name="password" type="text" required />
+      <h3><a class="register" href="/">Login</a></h3>
+      <input type="submit" value="Register" />
+    </form>
+  </body>
+</html>
