@@ -5,18 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Password Manager</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/static/styles.css">
   </head>
   <body>
 	<script src="index.js"></script>
-    <h1>Login</h1>
-    <form method="post" action=".">
-      <label for="userName">User name: </label>
-      <input id="userName" name="userName" type="text" required />
-      <label for="password">Password: </label>
-      <input id="password" name="password" type="text" required />
-      <h3><a class="register" href="/register">Register</a></h3>
-      <input type="submit" value="Login" />
-    </form>
+    <div>
+      <h1>Login</h1>
+      <form method="post" action=".">
+        <div id="namediv">
+          <label id="name" for="userName">User name: </label>
+          <input id="userName" name="userName" type="text" required />
+        </div>
+        <div id="passdiv">
+          <label id="pass" for="password">Password: </label>
+          <input id="password" name="password" type="text" required />
+        </div>
+          <input id="button" type="submit" value="Login" />
+          <h3 id="register"><a href="/register">Register</a></h3>
+      </form>
+    </div>
   </body>
 </html>
