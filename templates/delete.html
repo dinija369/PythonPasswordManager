@@ -9,13 +9,12 @@
   </head>
   <body>
     <div>
-      <h1 >Profile: {{ name }}</h1>
-      <!--<p>Passwords saved: {{ number }}</p>-->
-      <form method="post" action="/Add/{{ name }}">
-        <input style="background-color: rgb(138, 228, 87);" id="button" type="submit" value="Add a password" />
-      </form>
+      <h1 >Password deleted succesfully</h1>
       <form method="post" action="/ViewPassword/{{ name }}">
         <input style="background-color: rgb(110, 118, 231);" id="button" type="submit" value="View passwords" />
+      </form>
+      <form method="post" action="/profile/{{ name }}">
+        <input style="background-color: rgb(226, 100, 216);" id="button" type="submit" value="Profile" />
       </form>
     </div>
   </body>

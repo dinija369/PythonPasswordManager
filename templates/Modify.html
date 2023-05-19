@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Password Manager</title>
+    <link rel="stylesheet" href="/static/styles.css">
+  </head>
+  <body>
+    <div style="height: 700px;">
+      <h1>Update</h1>
+      <p>{{ x }}: {{ y }}</p>
+        <form style="height: 200px;" method="post" action="/ModifyService/{{ name }}/{{ x }}/{{ y }}">
+            <label style="margin-top: 50px;" id="name" for="service">New Service:</label>
+            <input style="width: 80%;" id="userName" name="service" type="text" required />
+            <input style="background-color: rgb(138, 228, 87); width: 60px; height: 30px; float: right; position: relative; bottom: 42px;" id="button" type="submit" value="Update" />
+        </form>
+        <form style="height: 200px;" method="post" action="/ModifyPassword/{{ name }}/{{ x }}/{{ y }}">
+            <label style="position: relative; bottom: 100px;" id="pass" for="password2">New Password:</label>
+            <input style="width: 80%; position: relative; bottom: 100px;" id="password" name="password2" type="text" required />
+            <input style="background-color: rgb(213, 241, 112); width: 60px; height: 30px; float: right; position: relative; bottom: 142px;" id="button" type="submit" value="Update" />
+        </form>
+        <form style="height: 100px;" style="height: 100px;" method="post" action="/ViewPassword/{{ name }}">
+          <input style="background-color: rgb(110, 118, 231); margin: auto; width: 50%; margin-top: 50px; position: relative; bottom: 200px;" id="button" type="submit" value="View passwords" />
+        </form>
+        <form style="height: 100px;" style="height: 100px;" method="post" action="/profile/{{ name }}">
+          <input style="background-color: rgb(226, 100, 216); width: 50%; position: relative; bottom: 250px;" id="button" type="submit" value="Profile" />
+        </form>
+    </div>
+  </body>
+</html>

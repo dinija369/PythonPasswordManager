@@ -16,7 +16,7 @@ def home():
         Password = str(passwordGet)
         encodePassword = Password.encode('utf-8')
         # DB CONNECTION
-        server = '' 
+        server = 'DESKTOP-LQ2RF0O\SQLEXPRESS' 
         database = 'passwordManager'
         connection = pyodbc.connect('DRIVER={SQL Server};SERVER=' + server + ';DATABASE=' + database + ';Trusted_Connection=yes;') 
 
@@ -69,7 +69,7 @@ def register():
 
 
         # DB CONNECTION
-        server = '' 
+        server = 'DESKTOP-LQ2RF0O\SQLEXPRESS' 
         database = 'passwordManager'
         #db connection
         connection = pyodbc.connect('DRIVER={SQL Server};SERVER=' + server + ';DATABASE=' + database + ';Trusted_Connection=yes;') 
@@ -89,9 +89,91 @@ def register():
 def profile(user):
     return render_template("profile.html", name = user)
 
-@manager.route("/test/<user>", methods=["GET", "POST"])
+@manager.route("/Modify/<user>/<service>/<password>", methods=["GET", "POST"])
+def Modify(user, service, password):
+    return render_template("Modify.html", name = user, x = service, y = password)
+
+@manager.route("/ModifyPassword/<user>/<service>/<password>", methods=["GET", "POST"])
+def ModifyService(user, service, password):
+    if request.method == "POST":
+        getNewPassword = request.form.get("password2")
+        userName = user
+        passwordService = service
+
+        #encrypt passwords and save to db
+        #1. ask for password to add
+        addPassword = str(getNewPassword)
+        #2. encrypt
+        encodedPassword = addPassword.encode('utf-8')
+        # fernet library generates encryption key
+        Key = Fernet.generate_key()
+        # fernet library is initialized with the generated key
+        fernet = Fernet(Key)
+        # password is encrypted
+        encryptedPassword = fernet.encrypt(encodedPassword)
+
+        # DB CONNECTION
+        server = 'DESKTOP-LQ2RF0O\SQLEXPRESS' 
+        database = 'passwordManager'
+        #db connection
+        connection = pyodbc.connect('DRIVER={SQL Server};SERVER=' + server + ';DATABASE=' + database + ';Trusted_Connection=yes;') 
+        #calling cursor to handle queries
+        cursor = connection.cursor()
+
+        cursor.execute('UPDATE passwordManager.dbo.passwords SET [password] = ? WHERE [user] = ? AND [service] = ?',  (encryptedPassword.decode('utf-8'), userName, passwordService))
+        cursor.execute('UPDATE passwordManager.dbo.keys SET [crypt_key] = ? WHERE [user] = ? AND [service] = ?',  (Key.decode('utf-8')), userName, passwordService)
+
+        # the query is commited to the database and the connection and cursor are closed
+        connection.commit()
+        cursor.close() 
+        connection.close()
+
+    return render_template("Modify.html", name = user, x = service, y = password)
+
+@manager.route("/ModifyService/<user>/<service>/<password>", methods=["GET", "POST"])
+def ModifyPassword(user, service, password):
+    if request.method == "POST":
+        getNewService = request.form.get("service")
+        userName = user
+        passwordService = service
+        # DB CONNECTION
+        server = 'DESKTOP-LQ2RF0O\SQLEXPRESS' 
+        database = 'passwordManager'
+        #db connection
+        connection = pyodbc.connect('DRIVER={SQL Server};SERVER=' + server + ';DATABASE=' + database + ';Trusted_Connection=yes;') 
+        #calling cursor to handle queries
+        cursor = connection.cursor()
+        cursor.execute('UPDATE passwordManager.dbo.passwords SET [service] = ? WHERE [user] = ? AND [service] = ?',  (getNewService, userName, passwordService))
+        cursor.execute('UPDATE passwordManager.dbo.keys SET [service] = ? WHERE [user] = ? AND [service] = ?',  (getNewService, userName, passwordService))
+        # the query is commited to the database and the connection and cursor are closed
+        connection.commit()
+        cursor.close() 
+        connection.close()
+
+    return render_template("Modify.html", name = user, x = service, y = password)
+
+@manager.route("/Add/<user>", methods=["GET", "POST"])
 def test(user):
-    return render_template("test.html", name = user)
+    return render_template("Add.html", name = user)
+
+@manager.route("/delete/<user>/<service>", methods=["GET", "POST"])
+def delete(user, service):
+    if request.method == "POST":
+        userName = user
+        passwordService = service
+        server = 'DESKTOP-LQ2RF0O\SQLEXPRESS' 
+        database = 'passwordManager'
+        connection = pyodbc.connect('DRIVER={SQL Server};SERVER=' + server + ';DATABASE=' + database + ';Trusted_Connection=yes;') 
+        cursor = connection.cursor() 
+        #DELETE FROM [dbo].[passwords]WHERE [user] = 'josh' AND [service] = 'netflix';
+        cursor.execute('DELETE FROM passwordManager.dbo.passwords WHERE [user] = ? AND [service] = ?',  (userName, passwordService))
+        cursor.execute('DELETE FROM passwordManager.dbo.keys WHERE [user] = ? AND [service] = ?',  (userName, passwordService))
+        # the query is commited to the database and the connection and cursor are closed
+        connection.commit()
+        cursor.close() 
+        connection.close()
+        # TO DO return redirect(url_for("ViewPassword", name = user)) look at AddPassword section
+    return render_template("delete.html", x = service, name = user)
 
 @manager.route("/AddPassword/<user>", methods=["GET", "POST"])
 def AddPassword(user):
@@ -99,8 +181,8 @@ def AddPassword(user):
         getPassword = request.form.get("password")
         getService = request.form.get("service")
 
-        if getPassword == 'None' or getService == 'None':
-            return render_template("AddPassword.html", name = user)
+        #if getPassword == 'None' or getService == 'None':
+            #return render_template("AddPassword.html", name = user)
 
         userName = user
         #encrypt passwords and save to db
@@ -117,7 +199,7 @@ def AddPassword(user):
         encryptedPassword = fernet.encrypt(encodedPassword)
 
         # DB CONNECTION
-        server = '' 
+        server = 'DESKTOP-LQ2RF0O\SQLEXPRESS' 
         database = 'passwordManager'
         #db connection
         connection = pyodbc.connect('DRIVER={SQL Server};SERVER=' + server + ';DATABASE=' + database + ';Trusted_Connection=yes;') 
@@ -136,15 +218,16 @@ def AddPassword(user):
         #4 go back to menu
         #return redirect(url_for("profile", user = userName))
         return redirect(url_for("profile", user = userName))
-    return render_template("AddPassword.html", name = user)
+    #return render_template("AddPassword.html", name = user)
     
 @manager.route("/ViewPassword/<user>", methods=["GET", "POST"])
 def ViewPassword(user):
     userName = user
+
     #retrieve encrypted passwords from database and display
     #1. get encrypted passwords for the user above from the password table
     # DB CONNECTION
-    server = '' 
+    server = 'DESKTOP-LQ2RF0O\SQLEXPRESS' 
     database = 'passwordManager'
     connection = pyodbc.connect('DRIVER={SQL Server};SERVER=' + server + ';DATABASE=' + database + ';Trusted_Connection=yes;') 
     cursor = connection.cursor() 

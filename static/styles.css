@@ -14,7 +14,6 @@ h1 {
 }
 
 div {
-  border: 1px black solid;
   width: 25%;
   margin: auto;
   padding: 10px;
@@ -49,7 +48,7 @@ div {
 
 #button {
   margin: auto;
-  width: 70%;
+  width: 50%;
   height: 35px;
   margin-top: 50px;
   margin-bottom: 50px;
@@ -81,4 +80,21 @@ p {
 
 #list {
   height: auto;
+  width: 40%;
+}
+
+#button2, #button1 {
+  margin: auto;
+  float: right;
+  width: 60px;
+  height: 30px;
+  margin-left: 10px;
+  display: inline;
+  position: relative;
+  bottom: 50px;
+  background-color: rgb(135, 135, 240);
+}
+
+#button1 {
+  background-color: rgb(235, 125, 125);
 }
