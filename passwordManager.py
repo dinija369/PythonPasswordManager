@@ -3,6 +3,13 @@ import pyodbc
 from cryptography.fernet import Fernet
 from flask import Flask, render_template, request, url_for, redirect
 
+
+def Connection():
+    server = '' 
+    database = 'passwordManager'
+    connection = 'DRIVER={SQL Server};SERVER=' + server + ';DATABASE=' + database + ';Trusted_Connection=yes;'
+    return connection
+
 # name of the module
 manager = Flask(__name__)
 
@@ -16,9 +23,7 @@ def home():
         Password = str(passwordGet)
         encodePassword = Password.encode('utf-8')
         # DB CONNECTION
-        server = 'DESKTOP-LQ2RF0O\SQLEXPRESS' 
-        database = 'passwordManager'
-        connection = pyodbc.connect('DRIVER={SQL Server};SERVER=' + server + ';DATABASE=' + database + ';Trusted_Connection=yes;') 
+        connection = pyodbc.connect(Connection()) 
 
 
         cursor = connection.cursor() 
@@ -69,10 +74,7 @@ def register():
 
 
         # DB CONNECTION
-        server = 'DESKTOP-LQ2RF0O\SQLEXPRESS' 
-        database = 'passwordManager'
-        #db connection
-        connection = pyodbc.connect('DRIVER={SQL Server};SERVER=' + server + ';DATABASE=' + database + ';Trusted_Connection=yes;') 
+        connection = pyodbc.connect(Connection())
         #calling cursor to handle queries
         cursor = connection.cursor()
 
@@ -113,10 +115,7 @@ def ModifyService(user, service, password):
         encryptedPassword = fernet.encrypt(encodedPassword)
 
         # DB CONNECTION
-        server = 'DESKTOP-LQ2RF0O\SQLEXPRESS' 
-        database = 'passwordManager'
-        #db connection
-        connection = pyodbc.connect('DRIVER={SQL Server};SERVER=' + server + ';DATABASE=' + database + ';Trusted_Connection=yes;') 
+        connection = pyodbc.connect(Connection())
         #calling cursor to handle queries
         cursor = connection.cursor()
 
@@ -137,10 +136,7 @@ def ModifyPassword(user, service, password):
         userName = user
         passwordService = service
         # DB CONNECTION
-        server = 'DESKTOP-LQ2RF0O\SQLEXPRESS' 
-        database = 'passwordManager'
-        #db connection
-        connection = pyodbc.connect('DRIVER={SQL Server};SERVER=' + server + ';DATABASE=' + database + ';Trusted_Connection=yes;') 
+        connection = pyodbc.connect(Connection())
         #calling cursor to handle queries
         cursor = connection.cursor()
         cursor.execute('UPDATE passwordManager.dbo.passwords SET [service] = ? WHERE [user] = ? AND [service] = ?',  (getNewService, userName, passwordService))
@@ -161,9 +157,7 @@ def delete(user, service):
     if request.method == "POST":
         userName = user
         passwordService = service
-        server = 'DESKTOP-LQ2RF0O\SQLEXPRESS' 
-        database = 'passwordManager'
-        connection = pyodbc.connect('DRIVER={SQL Server};SERVER=' + server + ';DATABASE=' + database + ';Trusted_Connection=yes;') 
+        connection = pyodbc.connect(Connection()) 
         cursor = connection.cursor() 
         #DELETE FROM [dbo].[passwords]WHERE [user] = 'josh' AND [service] = 'netflix';
         cursor.execute('DELETE FROM passwordManager.dbo.passwords WHERE [user] = ? AND [service] = ?',  (userName, passwordService))
@@ -199,10 +193,7 @@ def AddPassword(user):
         encryptedPassword = fernet.encrypt(encodedPassword)
 
         # DB CONNECTION
-        server = 'DESKTOP-LQ2RF0O\SQLEXPRESS' 
-        database = 'passwordManager'
-        #db connection
-        connection = pyodbc.connect('DRIVER={SQL Server};SERVER=' + server + ';DATABASE=' + database + ';Trusted_Connection=yes;') 
+        connection = pyodbc.connect(Connection())
         #calling cursor to handle queries
         cursor = connection.cursor()
 
@@ -227,9 +218,7 @@ def ViewPassword(user):
     #retrieve encrypted passwords from database and display
     #1. get encrypted passwords for the user above from the password table
     # DB CONNECTION
-    server = 'DESKTOP-LQ2RF0O\SQLEXPRESS' 
-    database = 'passwordManager'
-    connection = pyodbc.connect('DRIVER={SQL Server};SERVER=' + server + ';DATABASE=' + database + ';Trusted_Connection=yes;') 
+    connection = pyodbc.connect(Connection())
     cursor = connection.cursor() 
 
     cursor.execute('SELECT password, service FROM passwordManager.dbo.passwords WHERE [user] = ?', userName)
@@ -276,6 +265,6 @@ def ViewPassword(user):
 
     return render_template("ViewPassword.html", len = len(printPasswords), printPasswords = printPasswords, name = user)
 
-
+# this runs the application
 #if __name__ == "__main__":
     #manager.run(debug=True)
